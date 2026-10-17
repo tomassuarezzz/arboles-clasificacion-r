@@ -167,7 +167,7 @@ rpart.plot(modelo_final, main = "Iris: arbol seleccionado")
 
 # Seleccionar WA_Fn-UseC_-Telco-Customer-Churn.csv
 clientes <- read.csv(
-  file.choose(),
+  "WA_Fn-UseC_-Telco-Customer-Churn.csv",
   stringsAsFactors = FALSE
 )
 
