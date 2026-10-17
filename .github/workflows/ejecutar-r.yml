@@ -1,0 +1,42 @@
+name: Ejecutar arboles en R
+
+on:
+  push:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ejecutar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Descargar archivos del repositorio
+        uses: actions/checkout@v4
+
+      - name: Preparar R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          use-public-rspm: true
+
+      - name: Instalar paquetes
+        run: |
+          Rscript -e 'install.packages(c("caTools", "rpart", "rpart.plot"), repos = "https://cloud.r-project.org")'
+
+      - name: Ejecutar ejercicios y guardar resultados
+        shell: Rscript {0}
+        run: |
+          dir.create("resultados", showWarnings = FALSE)
+          sink("resultados/salida.txt", split = TRUE)
+          pdf("resultados/arboles.pdf", width = 12, height = 8)
+          source("P05_Arboles_Resolucion.R", echo = TRUE)
+          dev.off()
+          print(sessionInfo())
+          sink()
+
+      - name: Guardar archivos descargables
+        uses: actions/upload-artifact@v4
+        with:
+          name: resultados-arboles
+          path: resultados/
